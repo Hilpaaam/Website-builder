@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ILUGBARO PELUMI — Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        neon: { DEFAULT: '#FF6A00', light: '#FF8C33', dark: '#CC5500', glow: 'rgba(255,106,0,0.15)' },
+                        silver: { DEFAULT: '#C0C0C0', light: '#E0E0E0', dark: '#8A8A8A', muted: '#6B6B6B' },
+                        surface: { 0: '#000000', 1: '#0A0A0A', 2: '#111111', 3: '#1A1A1A', 4: '#222222', 5: '#2A2A2A' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        ::selection { background: #FF6A00; color: #000; }
+
+        /* Grain texture overlay */
+        .grain::before {
+            content: '';
+            position: fixed;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Hero name animation */
+        @keyframes revealLine {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,106,0,0.1); }
+            50% { box-shadow: 0 0 40px rgba(255,106,0,0.2); }
+        }
+        .anim-line { animation: revealLine 1s ease-out forwards; transform-origin: left; }
+        .anim-fade-1 { animation: fadeUp 0.8s ease-out 0.2s both; }
+        .anim-fade-2 { animation: fadeUp 0.8s ease-out 0.4s both; }
+        .anim-fade-3 { animation: fadeUp 0.8s ease-out 0.6s both; }
+        .anim-fade-4 { animation: fadeUp 0.8s ease-out 0.8s both; }
+        .anim-fade-5 { animation: fadeUp 0.8s ease-out 1s both; }
+        .anim-slide { animation: slideIn 0.6s ease-out both; }
+
+        /* Scroll reveal */
+        .reveal { opacity: 0; transform: translateY(25px); transition: all 0.7s ease-out; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* Timeline line */
+        .timeline-line {
+            background: linear-gradient(to bottom, #FF6A00, rgba(255,106,0,0.1), transparent);
+        }
+
+        /* Orange accent bar */
+        .accent-bar {
+            background: linear-gradient(90deg, #FF6A00, #FF8C33);
+        }
+
+        /* Card hover */
+        .exp-card {
+            transition: all 0.3s ease;
+            border-left: 2px solid transparent;
+        }
+        .exp-card:hover {
+            border-left-color: #FF6A00;
+            background: rgba(255,106,0,0.03);
+        }
+
+        /* Skill tag */
+        .skill-tag {
+            transition: all 0.2s ease;
+        }
+        .skill-tag:hover {
+            background: #FF6A00;
+            color: #000;
+            border-color: #FF6A00;
+        }
+
+        /* Nav blur */
+        .nav-blur {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #FF6A00; }
+
+        /* Stats counter */
+        .stat-box {
+            position: relative;
+        }
+        .stat-box::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+        .stat-box:last-child::after { display: none; }
+
+        /* Venture card */
+        .venture-card {
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .venture-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #FF6A00, transparent);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .venture-card:hover::before { transform: scaleX(1); }
+        .venture-card:hover { background: rgba(255,106,0,0.04); }
+
+        /* Mobile menu */
+        .mobile-menu { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .mobile-menu.open { max-height: 400px; }
+
+        /* Tool pill */
+        .tool-pill {
+            transition: all 0.2s ease;
+        }
+        .tool-pill:hover {
+            background: rgba(255,106,0,0.15);
+            border-color: rgba(255,106,0,0.4);
+            color: #FF8C33;
+        }
+    </style>
+</head>
+<body class="bg-surface-0 text-white font-sans grain">
+
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 left-0 right-0 z-50 nav-blur bg-surface-0/80 border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-9 h-9 bg-neon flex items-center justify-center">
+                        <span class="text-black font-black text-sm">IP</span>
+                    </div>
+                    <span class="text-sm font-bold tracking-widest uppercase text-white/90 group-hover:text-neon transition-colors duration-200">Ilugbaro</span>
+                </a>
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center gap-1">
+                    <a href="#profile" class="px-4 py-2 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon transition-colors duration-200">Profile</a>
+                    <a href="#experience" class="px-4 py-2 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon transition-colors duration-200">Experience</a>
+                    <a href="#ventures" class="px-4 py-2 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon transition-colors duration-200">Ventures</a>
+                    <a href="#skills" class="px-4 py-2 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon transition-colors duration-200">Skills</a>
+                    <a href="#contact" class="ml-4 px-5 py-2.5 bg-neon text-black text-xs font-bold tracking-wider uppercase hover:bg-neon-light transition-colors duration-200">Contact</a>
+                </div>
+                <!-- Mobile toggle -->
+                <button id="menuToggle" class="lg:hidden p-2 text-silver-dark hover:text-neon transition-colors">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu lg:hidden border-t border-white/5">
+                <div class="py-4 flex flex-col gap-1">
+                    <a href="#profile" class="px-4 py-2.5 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon hover:bg-white/5 transition-all">Profile</a>
+                    <a href="#experience" class="px-4 py-2.5 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon hover:bg-white/5 transition-all">Experience</a>
+                    <a href="#ventures" class="px-4 py-2.5 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon hover:bg-white/5 transition-all">Ventures</a>
+                    <a href="#skills" class="px-4 py-2.5 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon hover:bg-white/5 transition-all">Skills</a>
+                    <a href="#contact" class="mx-4 mt-2 px-5 py-2.5 bg-neon text-black text-xs font-bold tracking-wider uppercase text-center">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-screen flex items-end pb-12 lg:pb-20 pt-20 overflow-hidden">
+        <!-- Background texture layers -->
+        <div class="absolute inset-0 bg-gradient-to-br from-surface-0 via-surface-1 to-surface-0"></div>
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('https://picsum.photos/seed/darktexture/1920/1080.jpg'); background-size: cover; background-position: center; filter: grayscale(100%) contrast(1.5);"></div>
+        <div class="absolute top-1/4 right-0 w-1/2 h-1/2 bg-neon/[0.02] blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-neon/20 to-transparent"></div>
+
+        <div class="relative max-w-7xl mx-auto px-6 lg:px-8 w-full">
+            <!-- Top label -->
+            <div class="anim-fade-1 mb-6 flex items-center gap-3">
+                <div class="w-2 h-2 bg-neon rounded-full animate-pulse"></div>
+                <span class="text-xs font-medium tracking-[0.2em] uppercase text-silver-dark">Available for Opportunities</span>
+            </div>
+
+            <!-- Name -->
+            <div class="mb-4">
+                <h1 class="text-[clamp(3rem,10vw,8.5rem)] font-black leading-[0.85] tracking-tighter text-white anim-fade-2">
+                    ILUGBARO
+                </h1>
+                <h1 class="text-[clamp(3rem,10vw,8.5rem)] font-black leading-[0.85] tracking-tighter text-transparent anim-fade-3" style="-webkit-text-stroke: 1.5px rgba(255,255,255,0.3);">
+                    PELUMI
+                </h1>
+            </div>
+
+            <!-- Orange accent line -->
+            <div class="accent-bar h-1 w-32 mb-8 anim-line"></div>
+
+            <!-- Role descriptors -->
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+                <div class="anim-fade-4">
+                    <p class="text-lg lg:text-xl font-semibold text-white/90 tracking-tight leading-tight mb-2">
+                        Travel Operations & Aviation Management
+                    </p>
+                    <p class="text-lg lg:text-xl font-semibold text-silver-dark tracking-tight leading-tight mb-2">
+                        Applied AI / Data Operations
+                    </p>
+                    <p class="text-lg lg:text-xl font-semibold text-neon tracking-tight leading-tight">
+                        Founder & Entrepreneur
+                    </p>
+                </div>
+                <div class="anim-fade-5 flex flex-col items-start lg:items-end gap-2">
+                    <div class="flex items-center gap-2 text-silver-dark">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                        <span class="text-sm font-medium">Lagos, Nigeria</span>
+                    </div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <a href="https://linkedin.com/in/pelumi-ilugbaro-35336712a" target="_blank" class="flex items-center gap-2 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon transition-colors duration-200">
+                            <i data-lucide="linkedin" class="w-4 h-4"></i>
+                            LinkedIn
+                        </a>
+                        <a href="mailto:Ilugbaropelumi@gmail.com" class="flex items-center gap-2 text-xs font-medium tracking-wider uppercase text-silver-dark hover:text-neon transition-colors duration-200">
+                            <i data-lucide="mail" class="w-4 h-4"></i>
+                            Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats bar -->
+            <div class="mt-12 pt-8 border-t border-white/5 grid grid-cols-2 lg:grid-cols-4 gap-6 anim-fade-5">
+                <div class="stat-box pr-6">
+                    <div class="text-3xl lg:text-4xl font-black text-white tracking-tight">5+</div>
+                    <div class="text-xs font-medium tracking-wider uppercase text-silver-dark mt-1">Years Experience</div>
+                </div>
+                <div class="stat-box pr-6">
+                    <div class="text-3xl lg:text-4xl font-black text-white tracking-tight">4</div>
+                    <div class="text-xs font-medium tracking-wider uppercase text-silver-dark mt-1">Active Roles</div>
+                </div>
+                <div class="stat-box pr-6">
+                    <div class="text-3xl lg:text-4xl font-black text-white tracking-tight">2</div>
+                    <div class="text-xs font-medium tracking-wider uppercase text-silver-dark mt-1">Ventures Founded</div>
+                </div>
+                <div class="stat-box">
+                    <div class="text-3xl lg:text-4xl font-black text-neon tracking-tight">12+</div>
+                    <div class="text-xs font-medium tracking-wider uppercase text-silver-dark mt-1">Tools Mastered</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+            <i data-lucide="chevron-down" class="w-4 h-4 text-silver-dark"></i>
+        </div>
+    </section>
+
+    <!-- PROFILE SECTION -->
+    <section id="profile" class="relative py-16 lg:py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="reveal grid lg:grid-cols-12 gap-10 lg:gap-16">
+                <!-- Section label -->
+                <div class="lg:col-span-3">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-1 h-8 bg-neon"></div>
+                        <span class="text-xs font-bold tracking-[0.2em] uppercase text-neon">01 — Profile</span>
+                    </div>
+                    <h2 class="text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight">Professional<br>Summary</h2>
+                </div>
+                <!-- Content -->
+                <div class="lg:col-span-9">
+                    <p class="text-base lg:text-lg text-silver leading-relaxed mb-6">
+                        Versatile professional operating at the intersection of <span class="text-white font-semibold">travel operations</span> and <span class="text-white font-semibold">applied AI/data work</span>. Currently Branch Manager at a Lagos travel consultancy, overseeing flight ticketing, tour packaging, visa processing and pilgrimage logistics — while concurrently delivering remote AI evaluation and quality assurance work (RLHF, QA reviewing) for AI training platforms.
+                    </p>
+                    <p class="text-base lg:text-lg text-silver leading-relaxed mb-8">
+                        Holds a <span class="text-white font-semibold">B.Tech in Transport Management (Aviation)</span> from LAUTECH and is building two independent ventures — a logistics intelligence platform and a building-materials supply business — reflecting a consistent drive to combine <span class="text-neon font-semibold">operational discipline with emerging technology</span>.
+                    </p>
+                    <!-- Key identity cards -->
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div class="bg-surface-2 border border-white/5 p-5 hover:border-neon/20 transition-colors duration-300">
+                            <div class="w-10 h-10 bg-neon/10 flex items-center justify-center mb-3">
+                                <i data-lucide="plane" class="w-5 h-5 text-neon"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-white mb-1 tracking-tight">Aviation & Travel</h3>
+                            <p class="text-xs text-silver-dark leading-relaxed">GDS-qualified operations leader with international group tour coordination experience</p>
+                        </div>
+                        <div class="bg-surface-2 border border-white/5 p-5 hover:border-neon/20 transition-colors duration-300">
+                            <div class="w-10 h-10 bg-neon/10 flex items-center justify-center mb-3">
+                                <i data-lucide="brain" class="w-5 h-5 text-neon"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-white mb-1 tracking-tight">AI & Data Ops</h3>
+                            <p class="text-xs text-silver-dark leading-relaxed">RLHF evaluation, QA review, computer vision annotation, and workflow automation</p>
+                        </div>
+                        <div class="bg-surface-2 border border-white/5 p-5 hover:border-neon/20 transition-colors duration-300">
+                            <div class="w-10 h-10 bg-neon/10 flex items-center justify-center mb-3">
+                                <i data-lucide="rocket" class="w-5 h-5 text-neon"></i>
+                            </div>
+                            <h3 class="text-sm font-bold text-white mb-1 tracking-tight">Entrepreneurship</h3>
+                            <p class="text-xs text-silver-dark leading-relaxed">Two ventures in development: AI logistics platform and building-materials supply</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE SECTION -->
+    <section id="experience" class="relative py-16 lg:py-24 border-t border-white/5">
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-neon/[0.01] blur-[100px]"></div>
+        <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Section header -->
+            <div class="reveal flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-neon"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase text-neon">02 — Experience</span>
+            </div>
+            <h2 class="reveal text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight mb-12">Professional<br>Curriculum</h2>
+
+            <!-- Timeline -->
+            <div class="relative">
+                <!-- Timeline line (desktop) -->
+                <div class="hidden lg:block absolute left-[200px] top-0 bottom-0 w-px timeline-line"></div>
+
+                <!-- Experience 1 -->
+                <div class="reveal exp-card relative lg:grid lg:grid-cols-12 gap-6 lg:gap-12 py-8 border-b border-white/5 pl-0 lg:pl-0">
+                    <div class="lg:col-span-4 lg:text-right lg:pr-12 mb-3 lg:mb-0">
+                        <div class="inline-flex items-center gap-2 bg-neon/10 border border-neon/20 px-3 py-1 rounded-full mb-2">
+                            <div class="w-1.5 h-1.5 bg-neon rounded-full animate-pulse"></div>
+                            <span class="text-[10px] font-bold tracking-wider uppercase text-neon">Current</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white tracking-tight">Branch Manager</h3>
+                        <p class="text-sm font-medium text-neon">Iriowuro Travels and Tours</p>
+                        <p class="text-xs text-silver-dark mt-1 flex items-center gap-1.5 lg:justify-end">
+                            <i data-lucide="map-pin" class="w-3 h-3"></i> Lagos, Nigeria
+                        </p>
+                    </div>
+                    <div class="hidden lg:flex absolute left-[196px] top-10 w-2.5 h-2.5 bg-neon rounded-full ring-4 ring-surface-0 z-10" style="animation: pulseGlow 3s infinite;"></div>
+                    <div class="lg:col-span-8">
+                        <ul class="space-y-2.5">
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Manage day-to-day branch operations spanning flight ticketing, visa processing, tour packaging and pilgrimage travel arrangements
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Coordinate group tour packages, including an international group tour to <span class="text-white font-medium">Doha, Qatar</span>
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Lead corporate outreach and business development, distributing proposals to organisations across Lagos
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Apply GDS proficiency (<span class="text-white font-medium">Amadeus, Galileo</span>) to ticketing and fare operations
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience 2 -->
+                <div class="reveal exp-card relative lg:grid lg:grid-cols-12 gap-6 lg:gap-12 py-8 border-b border-white/5">
+                    <div class="lg:col-span-4 lg:text-right lg:pr-12 mb-3 lg:mb-0">
+                        <div class="inline-flex items-center gap-2 bg-surface-3 border border-white/10 px-3 py-1 rounded-full mb-2">
+                            <div class="w-1.5 h-1.5 bg-neon rounded-full"></div>
+                            <span class="text-[10px] font-bold tracking-wider uppercase text-silver-dark">2026 – Present</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white tracking-tight">RLHF Evaluator</h3>
+                        <p class="text-sm font-medium text-silver-light">Project Neon Origin / Centific</p>
+                        <p class="text-xs text-silver-dark mt-1 flex items-center gap-1.5 lg:justify-end">
+                            <i data-lucide="wifi" class="w-3 h-3"></i> Remote
+                        </p>
+                    </div>
+                    <div class="hidden lg:flex absolute left-[196px] top-10 w-2.5 h-2.5 bg-surface-4 border-2 border-neon/40 rounded-full ring-4 ring-surface-0 z-10"></div>
+                    <div class="lg:col-span-8">
+                        <ul class="space-y-2.5">
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Evaluate AI model responses for quality, coherence, and accuracy against defined rubrics in RLHF pipelines
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Conduct preference ranking of model-generated responses; identify Areas of Improvement (AOIs)
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Develop and refine prompt-rubric pairs to standardise evaluation criteria across tasks
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                QA review of multilingual scripts (Finnish/English) and ASR output for accuracy, fluency, and consistency
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience 3 -->
+                <div class="reveal exp-card relative lg:grid lg:grid-cols-12 gap-6 lg:gap-12 py-8 border-b border-white/5">
+                    <div class="lg:col-span-4 lg:text-right lg:pr-12 mb-3 lg:mb-0">
+                        <div class="inline-flex items-center gap-2 bg-surface-3 border border-white/10 px-3 py-1 rounded-full mb-2">
+                            <div class="w-1.5 h-1.5 bg-surface-4 rounded-full"></div>
+                            <span class="text-[10px] font-bold tracking-wider uppercase text-silver-dark">2025 – Present</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white tracking-tight">Data Annotator</h3>
+                        <p class="text-sm font-medium text-silver-light">Roboflow</p>
+                        <p class="text-xs text-silver-dark mt-1 flex items-center gap-1.5 lg:justify-end">
+                            <i data-lucide="wifi" class="w-3 h-3"></i> Remote
+                        </p>
+                    </div>
+                    <div class="hidden lg:flex absolute left-[196px] top-10 w-2.5 h-2.5 bg-surface-4 border-2 border-white/10 rounded-full ring-4 ring-surface-0 z-10"></div>
+                    <div class="lg:col-span-8">
+                        <ul class="space-y-2.5">
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Apply precise bounding box annotations to large image datasets for <span class="text-white font-medium">object detection</span> model training
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Use polygon segmentation for instance segmentation; perform single and multi-label classification
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Maintain annotation quality and consistency standards throughout large-scale labelling projects
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience 4 -->
+                <div class="reveal exp-card relative lg:grid lg:grid-cols-12 gap-6 lg:gap-12 py-8 border-b border-white/5">
+                    <div class="lg:col-span-4 lg:text-right lg:pr-12 mb-3 lg:mb-0">
+                        <div class="inline-flex items-center gap-2 bg-surface-3 border border-white/10 px-3 py-1 rounded-full mb-2">
+                            <div class="w-1.5 h-1.5 bg-surface-4 rounded-full"></div>
+                            <span class="text-[10px] font-bold tracking-wider uppercase text-silver-dark">2023 – 2025</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white tracking-tight">Direct Sales Agent</h3>
+                        <p class="text-sm font-medium text-silver-light">UFitFly</p>
+                        <p class="text-xs text-silver-dark mt-1 flex items-center gap-1.5 lg:justify-end">
+                            <i data-lucide="map-pin" class="w-3 h-3"></i> Abeokuta, Ogun State
+                        </p>
+                    </div>
+                    <div class="hidden lg:flex absolute left-[196px] top-10 w-2.5 h-2.5 bg-surface-4 border-2 border-white/10 rounded-full ring-4 ring-surface-0 z-10"></div>
+                    <div class="lg:col-span-8">
+                        <ul class="space-y-2.5">
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Assisted clients with international and domestic flight bookings and end-to-end visa processing
+                            </li>
+                            <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                                Consistently achieved monthly sales targets; built lasting client relationships through proactive follow-up
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VENTURES SECTION -->
+    <section id="ventures" class="relative py-16 lg:py-24 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Section header -->
+            <div class="reveal flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-neon"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase text-neon">03 — Ventures</span>
+            </div>
+            <h2 class="reveal text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight mb-12">Entrepreneurial<br>Initiatives</h2>
+
+            <div class="grid lg:grid-cols-2 gap-6">
+                <!-- Venture 1 -->
+                <div class="reveal venture-card bg-surface-2 border border-white/5 p-8">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[10px] font-bold tracking-wider uppercase text-neon bg-neon/10 px-2.5 py-1 rounded-full">In Development</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">LogiFlow AI</h3>
+                            <p class="text-sm text-silver-dark mt-1">Logistics Intelligence Platform</p>
+                        </div>
+                        <div class="w-12 h-12 bg-neon/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="cpu" class="w-6 h-6 text-neon"></i>
+                        </div>
+                    </div>
+                    <ul class="space-y-2.5 mb-6">
+                        <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                            Building an AI-powered logistics intelligence platform with agentic capabilities
+                        </li>
+                        <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                            Scoped and compared AI backend providers: <span class="text-white font-medium">DeepSeek, Kimi, Qwen</span>
+                        </li>
+                        <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                            Set up full technical foundation: domain, Netlify deployment, dashboard subdomain, Google Search Console
+                        </li>
+                    </ul>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium tracking-wider uppercase bg-surface-4 text-silver-dark px-2.5 py-1 rounded">DeepSeek</span>
+                        <span class="text-[10px] font-medium tracking-wider uppercase bg-surface-4 text-silver-dark px-2.5 py-1 rounded">Netlify</span>
+                        <span class="text-[10px] font-medium tracking-wider uppercase bg-surface-4 text-silver-dark px-2.5 py-1 rounded">AI Agents</span>
+                    </div>
+                </div>
+
+                <!-- Venture 2 -->
+                <div class="reveal venture-card bg-surface-2 border border-white/5 p-8">
+                    <div class="flex items-start justify-between mb-6">
+                        <div>
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[10px] font-bold tracking-wider uppercase text-neon bg-neon/10 px-2.5 py-1 rounded-full">In Development</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white tracking-tight">SOW — Supply, Operations, Works</h3>
+                            <p class="text-sm text-silver-dark mt-1">Building Materials: Block Production, Supply & Distribution</p>
+                        </div>
+                        <div class="w-12 h-12 bg-neon/10 flex items-center justify-center shrink-0">
+                            <i data-lucide="building-2" class="w-6 h-6 text-neon"></i>
+                        </div>
+                    </div>
+                    <ul class="space-y-2.5 mb-6">
+                        <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                            Developed complete brand identity for a building-materials business covering block production and distribution
+                        </li>
+                        <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                            Authored a funding proposal leveraging an already-owned block moulding machine as a capital asset
+                        </li>
+                        <li class="flex gap-2.5 text-sm text-silver leading-relaxed">
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-neon mt-1 shrink-0"></i>
+                            Structured supply chain and operations framework for scalable block production and delivery
+                        </li>
+                    </ul>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-[10px] font-medium tracking-wider uppercase bg-surface-4 text-silver-dark px-2.5 py-1 rounded">Brand Strategy</span>
+                        <span class="text-[10px] font-medium tracking-wider uppercase bg-surface-4 text-silver-dark px-2.5 py-1 rounded">Funding</span>
+                        <span class="text-[10px] font-medium tracking-wider uppercase bg-surface-4 text-silver-dark px-2.5 py-1 rounded">Supply Chain</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS SECTION -->
+    <section id="skills" class="relative py-16 lg:py-24 border-t border-white/5">
+        <div class="absolute bottom-0 left-0 w-1/3 h-1/2 bg-neon/[0.015] blur-[100px]"></div>
+        <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+            <!-- Section header -->
+            <div class="reveal flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-neon"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase text-neon">04 — Skills</span>
+            </div>
+            <h2 class="reveal text-3xl lg:text-4xl font-black tracking-tight text-white leading-tight mb-12">Competencies<br>& Tools</h2>
+
+            <div class="reveal grid lg:grid-cols-12 gap-10 lg:gap-16">
+                <!-- Skill Categories -->
+                <div class="lg:col-span-7 space-y-8">
+                    <!-- Travel & Aviation -->
+                    <div>
+                        <h3 class="text-xs font-bold tracking-[0.15em] uppercase text-neon mb-4 flex items-center gap-2">
+                            <i data-lucide="plane" class="w-3.5 h-3.5"></i>
+                            Travel & Aviation
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Amadeus GDS</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Galileo GDS</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Flight Ticketing</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Visa Processing</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Tour Packaging</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Group Travel</span>
+                        </div>
+                    </div>
+
+                    <!-- AI & Data -->
+                    <div>
+                        <h3 class="text-xs font-bold tracking-[0.15em] uppercase text-neon mb-4 flex items-center gap-2">
+                            <i data-lucide="brain" class="w-3.5 h-3.5"></i>
+                            AI & Data Operations
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">RLHF Evaluation</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">QA Review</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Data Annotation</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Object Detection</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Image Segmentation</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">ASR Evaluation</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Prompt Engineering</span>
+                        </div>
+                    </div>
+
+                    <!-- Operations & Business -->
+                    <div>
+                        <h3 class="text-xs font-bold tracking-[0.15em] uppercase text-neon mb-4 flex items-center gap-2">
+                            <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
+                            Operations & Business
+                        </h3>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Branch Management</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Corporate Outreach</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Business Development</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Brand Identity</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Funding Proposals</span>
+                            <span class="skill-tag text-xs font-medium bg-surface-3 text-silver-light border border-white/10 px-3 py-1.5 rounded cursor-default">Project Management</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tools & Technologies -->
+                <div class="lg:col-span-5">
+                    <h3 class="text-xs font-bold tracking-[0.15em] uppercase text-neon mb-4 flex items-center gap-2">
+                        <i data-lucide="wrench" class="w-3.5 h-3.5"></i>
+                        Tools & Technologies
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="workflow" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">N8N</div>
+                                <div class="text-[10px] text-silver-dark">Workflow Automation</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="database" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">SQL</div>
+                                <div class="text-[10px] text-silver-dark">Database Queries</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="code" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Python</div>
+                                <div class="text-[10px] text-silver-dark">Scripting & Data</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="scan" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">CVAT</div>
+                                <div class="text-[10px] text-silver-dark">CV Annotation</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="image" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Roboflow</div>
+                                <div class="text-[10px] text-silver-dark">Data Annotation</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="bar-chart-3" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Power BI</div>
+                                <div class="text-[10px] text-silver-dark">Data Visualisation</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="palette" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Canva</div>
+                                <div class="text-[10px] text-silver-dark">Graphic Design</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="globe" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Netlify</div>
+                                <div class="text-[10px] text-silver-dark">Web Deployment</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="file-text" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">MS 365</div>
+                                <div class="text-[10px] text-silver-dark">Office Suite</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="layout-grid" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Google WS</div>
+                                <div class="text-[10px] text-silver-dark">Productivity</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="tag" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">OneForma</div>
+                                <div class="text-[10px] text-silver-dark">AI Platform</div>
+                            </div>
+                        </div>
+                        <div class="tool-pill flex items-center gap-3 bg-surface-2 border border-white/5 px-4 py-3 rounded">
+                            <i data-lucide="layers" class="w-4 h-4 text-silver-dark shrink-0"></i>
+                            <div>
+                                <div class="text-sm font-semibold text-white">Mercor</div>
+                                <div class="text-[10px] text-silver-dark">Super Annotate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Languages -->
+                    <div class="mt-8">
+                        <h3 class="text-xs font-bold tracking-[0.15em] uppercase text-silver-dark mb-3">Languages</h3>
+                        <div class="flex gap-3">
+                            <span class="text-sm font-medium text-white bg-surface-3 border border-white/10 px-4 py-2 rounded">English</span>
+                            <span class="text-sm font-medium text-white bg-surface-3 border border-white/10 px-4 py-2 rounded">Yorùbá</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDUCATION SECTION -->
+    <section class="relative py-16 lg:py-20 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="reveal flex items-center gap-3 mb-4">
+                <div class="w-1 h-8 bg-neon"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase text-neon">05 — Education</span>
+            </div>
+            <div class="reveal bg-surface-2 border border-white/5 p-8 lg:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div>
+                    <h3 class="text-2xl font-bold text-white tracking-tight mb-1">B.Tech — Transport Management (Aviation)</h3>
+                    <p class="text-base font-medium text-neon">Ladoke Akintola University of Technology (LAUTECH)</p>
+                    <p class="text-sm text-silver-dark mt-1 flex items-center gap-1.5">
+                        <i data-lucide="map-pin" class="w-3 h-3"></i> Ogbomoso, Oyo State, Nigeria
+                    </p>
+                </div>
+                <div class="shrink-0 bg-surface-4 border border-white/10 px-6 py-3 text-center">
+                    <div class="text-xl font-black text-white">2018 – 2024</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT / CTA SECTION -->
+    <section id="contact" class="relative py-20 lg:py-32 border-t border-white/5 overflow-hidden">
+        <!-- Background effects -->
+        <div class="absolute inset-0 bg-gradient-to-b from-surface-0 via-surface-1 to-surface-0"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-neon/[0.03] blur-[150px] rounded-full"></div>
+        <div class="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-neon/30 to-transparent"></div>
+
+        <div class="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
+            <div class="reveal">
+                <div class="inline-flex items-center gap-2 bg-neon/10 border border-neon/20 px-4 py-1.5 rounded-full mb-6">
+                    <div class="w-1.5 h-1.5 bg-neon rounded-full animate-pulse"></div>
+                    <span class="text-xs font-bold tracking-[0.15em] uppercase text-neon">Open to Connect</span>
+                </div>
+                <h2 class="text-4xl lg:text-6xl font-black tracking-tighter text-white leading-[0.95] mb-6">
+                    Let's Build<br>
+                    <span class="text-transparent" style="-webkit-text-stroke: 1.5px rgba(255,106,0,0.6);">Something Together</span>
+                </h2>
+                <p class="text-base lg:text-lg text-silver max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Whether it's travel operations, AI/data projects, or entrepreneurial collaboration — I'm always open to meaningful conversations and high-impact opportunities.
+                </p>
+            </div>
+
+            <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                <a href="mailto:Ilugbaropelumi@gmail.com" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-neon text-black px-8 py-4 text-sm font-bold tracking-wider uppercase hover:bg-neon-light transition-all duration-200" style="box-shadow: 0 0 30px rgba(255,106,0,0.15);">
+                    <i data-lucide="mail" class="w-4 h-4"></i>
+                    Send an Email
+                    <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+                <a href="https://linkedin.com/in/pelumi-ilugbaro-35336712a" target="_blank" class="group w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-transparent border border-white/20 text-white px-8 py-4 text-sm font-bold tracking-wider uppercase hover:border-neon hover:text-neon transition-all duration-200">
+                    <i data-lucide="linkedin" class="w-4 h-4"></i>
+                    LinkedIn Profile
+                    <i data-lucide="external-link" class="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                </a>
+            </div>
+
+            <!-- Contact details -->
+            <div class="reveal flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-silver-dark">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+                    <span>Ilugbaropelumi@gmail.com</span>
+                </div>
+                <div class="hidden sm:block w-1 h-1 bg-surface-4 rounded-full"></div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                    <span>No. 115, Allen Avenue, Ikeja, Lagos, Nigeria</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/5 py-8">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-7 h-7 bg-neon flex items-center justify-center">
+                    <span class="text-black font-black text-[10px]">IP</span>
+                </div>
+                <span class="text-xs text-silver-dark">© 2025 Ilugbaro Pelumi. All rights reserved.</span>
+            </div>
+            <div class="flex items-center gap-1 text-xs text-silver-dark">
+                <span>Built with</span>
+                <i data-lucide="zap" class="w-3 h-3 text-neon"></i>
+                <span>precision</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+            });
+        });
+
+        // Scroll reveal with IntersectionObserver
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // Stagger animation for siblings
+                    const siblings = entry.target.parentElement.querySelectorAll('.reveal');
+                    let delay = 0;
+                    siblings.forEach((sib, i) => {
+                        if (sib === entry.target) delay = i * 100;
+                    });
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, delay);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => observer.observe(el));
+
+        // Nav background on scroll
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.style.borderBottomColor = 'rgba(255,255,255,0.08)';
+                nav.style.backgroundColor = 'rgba(0,0,0,0.9)';
+            } else {
+                nav.style.borderBottomColor = 'rgba(255,255,255,0.03)';
+                nav.style.backgroundColor = 'rgba(0,0,0,0.8)';
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
