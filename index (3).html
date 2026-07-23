@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="LogiFlow AI — Palantir-style logistics intelligence for enterprises. Predict disruptions. Automate operations. Gain total visibility."/>
+<title>LogiFlow AI — Intelligence That Runs Your Operation</title>
+
+<!-- ============================================================
+     FONTS — Syne (display) + DM Sans (body) + DM Mono (numbers)
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+
+<style>
+/* ============================================================
+   CSS VARIABLES — Edit these to change the whole site's look
+   ============================================================ */
+:root {
+  --navy:       #020C1B;   /* darkest bg */
+  --navy2:      #071428;   /* section bg */
+  --navy3:      #0B1D38;   /* card bg */
+  --navy4:      #0F2548;   /* card hover */
+  --blue:       #1B4FD8;   /* primary accent */
+  --blue2:      #2563EB;   /* button hover */
+  --blue3:      #3B82F6;   /* borders, highlights */
+  --blue-light: #93C5FD;   /* light text accent */
+  --blue-glow:  rgba(27,79,216,0.18);
+  --white:      #F0F6FF;
+  --text:       #CBD5E1;
+  --muted:      #64748B;
+  --border:     rgba(59,130,246,0.14);
+  --border2:    rgba(59,130,246,0.28);
+  --serif:      'Syne', sans-serif;
+  --sans:       'DM Sans', system-ui, sans-serif;
+  --mono:       'DM Mono', monospace;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { background: var(--navy); color: var(--text); font-family: var(--sans); font-weight: 400; line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--sans); cursor: pointer; border: none; background: none; }
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+.display { font-family: var(--serif); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; color: var(--white); }
+.heading  { font-family: var(--serif); font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; color: var(--white); }
+.mono     { font-family: var(--mono); }
+.muted    { color: var(--muted); }
+.accent   { color: var(--blue3); }
+.container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px; border-radius: 8px; font-size: 15px;
+  font-weight: 500; font-family: var(--sans);
+  transition: all 0.2s ease; cursor: pointer; border: none;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--blue); color: #fff;
+  box-shadow: 0 0 24px rgba(27,79,216,0.35);
+}
+.btn-primary:hover { background: var(--blue2); transform: translateY(-1px); box-shadow: 0 0 36px rgba(27,79,216,0.5); }
+.btn-primary:active { transform: translateY(0); }
+.btn-ghost {
+  background: transparent; color: var(--white);
+  border: 1px solid var(--border2);
+}
+.btn-ghost:hover { background: var(--blue-glow); border-color: var(--blue3); }
+.btn-large { padding: 18px 40px; font-size: 17px; border-radius: 10px; }
+.btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* ============================================================
+   SECTION LAYOUT
+   ============================================================ */
+section { padding: 96px 0; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(59,130,246,0.1); border: 1px solid var(--border2);
+  color: var(--blue-light); font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 100px; margin-bottom: 20px;
+}
+.section-title { font-size: clamp(32px, 4vw, 52px); margin-bottom: 16px; }
+.section-sub { font-size: 18px; font-weight: 300; color: var(--text); line-height: 1.65; max-width: 580px; }
+.section-sub.centered { margin: 0 auto; text-align: center; }
+.text-center { text-align: center; }
+
+/* ============================================================
+   GRID BACKGROUND PATTERN
+   ============================================================ */
+.grid-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+  background-size: 52px 52px;
+}
+.grid-bg-fade {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 40%;
+  background: linear-gradient(transparent, var(--navy));
+  pointer-events: none;
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+#navbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 24px; height: 68px;
+  display: flex; align-items: center;
+  transition: background 0.3s, backdrop-filter 0.3s, border-color 0.3s;
+  border-bottom: 1px solid transparent;
+}
+#navbar.scrolled {
+  background: rgba(2,12,27,0.88);
+  backdrop-filter: blur(16px);
+  border-color: var(--border);
+}
+.nav-inner {
+  max-width: 1120px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--white); letter-spacing: -0.02em; }
+.nav-logo span { color: var(--blue3); }
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a { font-size: 14px; color: var(--muted); transition: color 0.2s; }
+.nav-links a:hover { color: var(--white); }
+.nav-right { display: flex; align-items: center; gap: 12px; }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: var(--white); border-radius: 1px; transition: 0.3s; }
+.mobile-menu {
+  display: none; position: fixed; top: 68px; left: 0; right: 0;
+  background: rgba(2,12,27,0.97); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border); padding: 28px 24px;
+  z-index: 99; flex-direction: column; gap: 24px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a { font-size: 18px; color: var(--text); }
+
+/* ============================================================
+   HERO SECTION
+   ============================================================ */
+#hero {
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  text-align: center; padding: 140px 24px 80px;
+  overflow: hidden;
+}
+.hero-glow {
+  position: absolute; top: 20%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 600px;
+  background: radial-gradient(ellipse, rgba(27,79,216,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-content { position: relative; z-index: 2; max-width: 860px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--blue-light);
+  letter-spacing: 0.14em; text-transform: uppercase;
+  font-weight: 500; margin-bottom: 32px; font-family: var(--mono);
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; width: 40px; height: 1px; background: var(--border2);
+}
+
+/* ── HEADLINE — Edit this text ── */
+.hero-h1 {
+  font-size: clamp(44px, 6.5vw, 84px);
+  font-family: var(--serif); font-weight: 800;
+  line-height: 1.04; letter-spacing: -0.03em;
+  color: var(--white); margin-bottom: 28px;
+}
+.hero-h1 .problem { color: var(--blue3); position: relative; }
+.hero-sub {
+  font-size: clamp(17px, 2vw, 20px); font-weight: 300;
+  color: var(--text); line-height: 1.65;
+  max-width: 640px; margin: 0 auto 44px;
+}
+.hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 52px; }
+.hero-trust {
+  font-size: 13px; color: var(--muted); font-family: var(--mono);
+  display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;
+}
+.hero-trust span { display: flex; align-items: center; gap: 6px; }
+.hero-trust span::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--blue3); flex-shrink: 0; }
+
+/* ── STAT BAR ── */
+.stat-bar {
+  display: flex; gap: 0;
+  border: 1px solid var(--border2); border-radius: 14px;
+  background: rgba(11,29,56,0.7); backdrop-filter: blur(12px);
+  margin-top: 64px; overflow: hidden; flex-wrap: wrap;
+}
+.stat-item {
+  flex: 1; min-width: 150px; padding: 24px 28px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+  font-family: var(--serif); font-size: 36px; font-weight: 800;
+  color: var(--blue3); line-height: 1; display: block; margin-bottom: 6px;
+}
+.stat-label { font-size: 12px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.04em; }
+
+/* ============================================================
+   MARQUEE — Trust logos / signals
+   ============================================================ */
+.marquee-section {
+  padding: 32px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  background: var(--navy2); overflow: hidden;
+}
+.marquee-track {
+  display: flex; gap: 64px; align-items: center;
+  animation: marquee 22s linear infinite; width: max-content;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-item {
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+  white-space: nowrap; display: flex; align-items: center; gap: 10px;
+}
+.marquee-item::before { content: '◆'; color: var(--blue3); font-size: 8px; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ============================================================
+   BENEFITS — "What You Get"
+   ============================================================ */
+#benefits { background: var(--navy2); }
+.benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 56px; }
+.benefit-card {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 36px 32px;
+  transition: border-color 0.25s, transform 0.2s, background 0.25s;
+  position: relative; overflow: hidden;
+}
+.benefit-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--blue); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.benefit-card:hover { border-color: var(--border2); background: var(--navy4); transform: translateY(-4px); }
+.benefit-card:hover::before { transform: scaleX(1); }
+.benefit-num {
+  font-family: var(--mono); font-size: 11px; color: var(--blue3);
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 8px;
+}
+.benefit-num::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.benefit-icon {
+  width: 52px; height: 52px; border-radius: 12px;
+  background: rgba(59,130,246,0.1); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; margin-bottom: 20px;
+}
+.benefit-card h3 { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 12px; line-height: 1.2; }
+.benefit-card p { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 20px; }
+.benefit-proof {
+  font-size: 13px; color: var(--blue-light);
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--mono); padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   PROOF SECTION — How it works + Trust
+   ============================================================ */
+#proof { background: var(--navy); }
+.proof-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.proof-visual {
+  position: relative; background: var(--navy3); border: 1px solid var(--border2);
+  border-radius: 20px; padding: 32px; overflow: hidden;
+}
+.proof-visual-glow {
+  position: absolute; top: -40%; right: -20%;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--blue-glow) 0%, transparent 60%);
+  pointer-events: none;
+}
+.proof-screen {
+  background: var(--navy2); border-radius: 12px; padding: 20px;
+  border: 1px solid var(--border);
+}
+.proof-screen-bar {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.psb-dot { width: 8px; height: 8px; border-radius: 50%; }
+.proof-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.proof-row:last-child { border-bottom: none; }
+.proof-route { color: var(--text); font-family: var(--mono); font-size: 12px; }
+.risk-pill {
+  font-size: 11px; font-weight: 500; padding: 3px 10px;
+  border-radius: 100px; font-family: var(--mono);
+}
+.risk-low  { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+.risk-med  { background: rgba(251,191,36,0.1); color: #fbbf24; border: 1px solid rgba(251,191,36,0.2); }
+.risk-high { background: rgba(239,68,68,0.1);  color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+.ai-alert {
+  background: rgba(27,79,216,0.1); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 12px 16px; margin-top: 16px;
+  font-size: 13px; color: var(--blue-light); font-family: var(--mono);
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.ai-alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue3); flex-shrink: 0; margin-top: 4px; animation: pulse 1.4s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+.proof-steps { display: flex; flex-direction: column; gap: 32px; }
+.proof-step { display: flex; gap: 20px; }
+.step-line { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.step-circle {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(27,79,216,0.15); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 12px; color: var(--blue3);
+}
+.step-connector { flex: 1; width: 1px; background: var(--border); margin: 6px 0; min-height: 32px; }
+.proof-step:last-child .step-connector { display: none; }
+.step-body { padding-top: 8px; }
+.step-body h4 { font-family: var(--serif); font-size: 18px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+.step-body p { font-size: 14px; color: var(--text); line-height: 1.65; }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+#testimonials { background: var(--navy2); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 52px; }
+.testimonial-card {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.testimonial-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.stars { color: var(--blue3); font-size: 14px; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-text { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(27,79,216,0.2); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-weight: 700; font-size: 14px; color: var(--blue3);
+}
+.author-name { font-size: 14px; font-weight: 500; color: var(--white); }
+.author-role { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+.trust-signals {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 56px;
+}
+.trust-item {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; text-align: center;
+}
+.trust-num { font-family: var(--serif); font-size: 28px; font-weight: 800; color: var(--white); margin-bottom: 4px; }
+.trust-label { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+#faq { background: var(--navy); }
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 52px; align-items: start; }
+.faq-col { display: flex; flex-direction: column; gap: 12px; }
+.faq-item {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden; transition: border-color 0.2s;
+}
+.faq-item.open { border-color: var(--border2); }
+.faq-question {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; background: none; border: none; cursor: pointer;
+  text-align: left; gap: 16px;
+}
+.faq-q-text { font-size: 15px; font-weight: 500; color: var(--white); line-height: 1.4; }
+.faq-chevron {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(59,130,246,0.1); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: transform 0.25s, background 0.2s;
+  color: var(--blue3);
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); background: var(--blue-glow); }
+.faq-answer {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.25s ease;
+  padding: 0 24px; font-size: 14px; color: var(--text); line-height: 1.7;
+}
+.faq-answer.open { max-height: 300px; padding: 0 24px 20px; }
+
+/* ============================================================
+   PRICING
+   ============================================================ */
+#pricing { background: var(--navy2); }
+.pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 52px; }
+.pricing-card {
+  background: var(--navy3); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px 32px;
+  display: flex; flex-direction: column;
+  transition: transform 0.2s, border-color 0.2s;
+  position: relative;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.featured {
+  border: 2px solid var(--blue3);
+  box-shadow: 0 0 40px var(--blue-glow);
+}
+.popular-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--blue); color: #fff; font-size: 11px; font-weight: 500;
+  padding: 5px 20px; border-radius: 100px; white-space: nowrap;
+  font-family: var(--mono); letter-spacing: 0.06em;
+}
+.pricing-tier { font-size: 11px; color: var(--blue-light); letter-spacing: 0.12em; text-transform: uppercase; font-family: var(--mono); margin-bottom: 16px; }
+.pricing-price {
+  font-family: var(--serif); font-size: 48px; font-weight: 800;
+  color: var(--white); line-height: 1; margin-bottom: 6px;
+}
+.pricing-price span { font-size: 20px; font-weight: 400; color: var(--muted); }
+.pricing-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; font-family: var(--mono); }
+.pricing-desc { font-size: 14px; color: var(--text); margin-bottom: 28px; line-height: 1.6; min-height: 48px; }
+.pricing-features { list-style: none; flex: 1; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
+.pricing-features li { font-size: 14px; color: var(--text); display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.pricing-features li::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--blue3); flex-shrink: 0; margin-top: 8px; }
+.pricing-cta { display: block; text-align: center; padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 500; transition: all 0.2s; }
+.pricing-cta.primary { background: var(--blue); color: #fff; }
+.pricing-cta.primary:hover { background: var(--blue2); box-shadow: 0 0 24px var(--blue-glow); }
+.pricing-cta.ghost { border: 1px solid var(--border2); color: var(--white); }
+.pricing-cta.ghost:hover { background: var(--blue-glow); border-color: var(--blue3); }
+.pricing-note { text-align: center; margin-top: 32px; font-size: 14px; color: var(--muted); }
+.pricing-note a { color: var(--blue3); }
+
+/* ============================================================
+   FINAL CLOSE — The section that makes leaving feel worse
+   ============================================================ */
+#close { background: var(--navy); position: relative; overflow: hidden; padding: 120px 0; }
+.close-glow {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 700px; height: 500px;
+  background: radial-gradient(ellipse, rgba(27,79,216,0.1) 0%, transparent 65%);
+  pointer-events: none;
+}
+.close-inner { position: relative; z-index: 2; text-align: center; max-width: 740px; margin: 0 auto; padding: 0 24px; }
+.close-tag {
+  display: inline-block; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+  color: #f87171; font-size: 11px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 100px; margin-bottom: 24px;
+  font-family: var(--mono);
+}
+.close-h2 { font-size: clamp(36px, 5vw, 64px); margin-bottom: 20px; }
+.close-sub { font-size: 18px; color: var(--text); line-height: 1.7; margin-bottom: 48px; }
+.close-guarantee {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--navy3); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 16px 24px;
+  font-size: 14px; color: var(--text); margin-bottom: 40px;
+}
+.guarantee-icon { font-size: 20px; }
+.close-urgency {
+  margin-top: 32px; font-size: 13px; color: var(--muted);
+  font-family: var(--mono); letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer { background: var(--navy2); border-top: 1px solid var(--border); padding: 56px 0 32px; }
+.footer-inner { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+.footer-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 40px; }
+.footer-logo { font-family: var(--serif); font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+.footer-logo span { color: var(--blue3); }
+.footer-tagline { font-size: 13px; color: var(--muted); max-width: 260px; line-height: 1.6; }
+.footer-links { display: flex; gap: 40px; flex-wrap: wrap; }
+.footer-links a { font-size: 14px; color: var(--muted); transition: color 0.2s; }
+.footer-links a:hover { color: var(--white); }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.footer-copy { font-size: 13px; color: var(--muted); }
+.footer-built { font-size: 12px; color: rgba(100,116,139,0.5); font-family: var(--mono); }
+
+/* ============================================================
+   FADE-IN ANIMATION — Triggers on scroll
+   ============================================================ */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.blue-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border2), transparent); }
+
+/* ============================================================
+   RESPONSIVE — Mobile first
+   ============================================================ */
+@media (max-width: 1024px) {
+  .proof-cols { grid-template-columns: 1fr; gap: 48px; }
+  .benefits-grid { grid-template-columns: 1fr 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin-left: auto; margin-right: auto; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .trust-signals { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-right .btn { display: none; }
+  .hamburger { display: flex; }
+  .benefits-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .stat-bar { justify-content: center; }
+  .stat-item { flex: 1 1 45%; }
+  section { padding: 72px 0; }
+  .footer-top { flex-direction: column; }
+  .trust-signals { grid-template-columns: 1fr 1fr; }
+  .hero-btns { flex-direction: column; align-items: center; }
+}
+@media (max-width: 480px) {
+  .stat-item { flex: 1 1 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .stat-item:last-child { border-bottom: none; }
+  .trust-signals { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Logi<span>Flow</span> AI</a>
+    <ul class="nav-links">
+      <li><a href="#benefits">What You Get</a></li>
+      <li><a href="#proof">How It Works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#pricing" class="btn btn-ghost" style="padding:10px 20px;font-size:14px;">View Plans</a>
+      <a href="#close" class="btn btn-primary" style="padding:10px 20px;font-size:14px;">Book Audit</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#benefits" onclick="closeMobile()">What You Get</a>
+  <a href="#proof" onclick="closeMobile()">How It Works</a>
+  <a href="#pricing" onclick="closeMobile()">Pricing</a>
+  <a href="#faq" onclick="closeMobile()">FAQ</a>
+  <a href="#close" class="btn btn-primary" onclick="closeMobile()" style="text-align:center;">Book Free Audit →</a>
+</div>
+
+<!-- ============================================================
+     HERO
+     Edit: hero-h1, hero-sub, CTA text, trust signals, stat numbers
+     ============================================================ -->
+<section id="hero">
+  <div class="grid-bg"></div>
+  <div class="grid-bg-fade"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-content fade-up">
+
+    <div class="hero-eyebrow">Palantir-Class Intelligence &nbsp;·&nbsp; Built for Enterprise Operations</div>
+
+    <!-- ★ RECOMMENDED HEADLINE (Option 3 of 5 — most visceral)
+         "Every disruption you missed was visible three hours earlier"
+         Why: It doesn't just name pain — it creates accountability and makes
+         the solution feel inevitable. The prospect can't unknow this. -->
+    <h1 class="hero-h1">
+      Every Disruption You Missed<br>
+      Was <span class="problem">Visible Three Hours Earlier.</span>
+    </h1>
+
+    <p class="hero-sub">
+      LogiFlow AI is a Palantir-style intelligence system for logistics, FMCG, and manufacturing enterprises — fusing live signals into a single command centre that predicts what goes wrong, before it costs you.
+    </p>
+
+    <div class="hero-btns">
+      <!-- PRIMARY CTA — 3 words, specific, never "Learn More" -->
+      <a href="#close" class="btn btn-primary btn-large">
+        Book Your Audit
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#proof" class="btn btn-ghost btn-large">See It in Action</a>
+    </div>
+
+    <!-- Trust signal under button -->
+    <div class="hero-trust">
+      <span>Free 60-min audit</span>
+      <span>No credit card needed</span>
+      <span>Live intelligence demo</span>
+      <span>Results in first session</span>
+    </div>
+
+    <!-- Animated stats -->
+    <div class="stat-bar">
+      <div class="stat-item">
+        <span class="stat-num" data-target="600" data-prefix="₦" data-suffix="B+">₦0B+</span>
+        <span class="stat-label">lost to logistics blind spots annually</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="81" data-suffix="%">0%</span>
+        <span class="stat-label">of queries handled autonomously</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="40" data-suffix="%">0%</span>
+        <span class="stat-label">reduction in operations costs</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-target="3" data-suffix="hrs">0hrs</span>
+        <span class="stat-label">earlier disruption detection</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     MARQUEE — Edit the marquee-item text to add your own signals
+     ============================================================ -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <!-- First set -->
+    <div class="marquee-item">Real-time fleet intelligence</div>
+    <div class="marquee-item">Port congestion prediction</div>
+    <div class="marquee-item">AI customer agent</div>
+    <div class="marquee-item">Route risk scoring</div>
+    <div class="marquee-item">Fuel cost forecasting</div>
+    <div class="marquee-item">Autonomous dispatch</div>
+    <div class="marquee-item">3D operations map</div>
+    <div class="marquee-item">Natural language queries</div>
+    <div class="marquee-item">Supply chain anomaly detection</div>
+    <div class="marquee-item">Live ETA prediction</div>
+    <!-- Duplicate for seamless loop -->
+    <div class="marquee-item">Real-time fleet intelligence</div>
+    <div class="marquee-item">Port congestion prediction</div>
+    <div class="marquee-item">AI customer agent</div>
+    <div class="marquee-item">Route risk scoring</div>
+    <div class="marquee-item">Fuel cost forecasting</div>
+    <div class="marquee-item">Autonomous dispatch</div>
+    <div class="marquee-item">3D operations map</div>
+    <div class="marquee-item">Natural language queries</div>
+    <div class="marquee-item">Supply chain anomaly detection</div>
+    <div class="marquee-item">Live ETA prediction</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     BENEFITS — "What You Get" (benefits, not features)
+     Edit: benefit-icon emoji, h3 title, p description, proof stat
+     ============================================================ -->
+<section id="benefits">
+  <div class="container">
+    <div class="text-center fade-up">
+      <span class="section-tag">What You Get</span>
+      <h2 class="section-title heading">Three outcomes. Not features.</h2>
+      <p class="section-sub centered">Your competitors are reacting to problems you'll never have — because you saw them coming.</p>
+    </div>
+
+    <div class="benefits-grid">
+
+      <!-- Benefit 1 -->
+      <div class="benefit-card fade-up">
+        <div class="benefit-num">01</div>
+        <div class="benefit-icon">🔭</div>
+        <h3>You know what breaks before it breaks</h3>
+        <p>Every disruption — silent driver, congested port, fuel spike, blocked route — leaves signals hours before it becomes a crisis. LogiFlow AI reads them continuously and surfaces the risk before it reaches your customer, your cargo, or your margin.</p>
+        <div class="benefit-proof">⟶ Average 3-hour advance warning on critical disruptions</div>
+      </div>
+
+      <!-- Benefit 2 -->
+      <div class="benefit-card fade-up">
+        <div class="benefit-num">02</div>
+        <div class="benefit-icon">⚡</div>
+        <h3>Your operations team gets their day back</h3>
+        <p>The average enterprise ops team spends 60%+ of their day answering "where is it?" — on WhatsApp, phone calls, and emails. LogiFlow AI absorbs all of it autonomously: tracking queries, delay alerts, driver coordination, invoice generation. They go back to running the operation.</p>
+        <div class="benefit-proof">⟶ 81% of customer queries resolved without human intervention</div>
+      </div>
+
+      <!-- Benefit 3 -->
+      <div class="benefit-card fade-up">
+        <div class="benefit-num">03</div>
+        <div class="benefit-icon">🧠</div>
+        <h3>Every decision backed by live intelligence</h3>
+        <p>Ask your operation anything — "Which routes are at risk today?", "Why did LG-041 miss its window?", "What does the next 48 hours look like for the Apapa corridor?" — and get a reasoned, data-backed answer in seconds. Not last week's report. Right now.</p>
+        <div class="benefit-proof">⟶ 62x faster decision-making vs. manual reporting</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="blue-divider"></div>
+
+<!-- ============================================================
+     PROOF — How it works + Live system preview
+     ============================================================ -->
+<section id="proof">
+  <div class="container">
+    <div class="proof-cols">
+
+      <!-- Visual: mock intelligence dashboard -->
+      <div class="proof-visual fade-up">
+        <div class="proof-visual-glow"></div>
+
+        <!-- Fake screen header -->
+        <div class="proof-screen-bar">
+          <div class="psb-dot" style="background:#f87171;"></div>
+          <div class="psb-dot" style="background:#fbbf24;"></div>
+          <div class="psb-dot" style="background:#4ade80;"></div>
+          <span style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px;">LogiFlow AI · Operations Intelligence · Live</span>
+          <span style="margin-left:auto;font-family:var(--mono);font-size:10px;color:#4ade80;display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:#4ade80;animation:pulse 1.4s ease infinite;display:inline-block;"></span>Live</span>
+        </div>
+
+        <div class="proof-screen">
+          <!-- Route risk table -->
+          <div style="font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">Route Risk Intelligence · Updated 2 min ago</div>
+          <div class="proof-row">
+            <span class="proof-route">Apapa → Ikorodu</span>
+            <span style="font-size:12px;color:var(--muted);font-family:var(--mono);">LG-002</span>
+            <span class="risk-pill risk-high">HIGH 85</span>
+          </div>
+          <div class="proof-row">
+            <span class="proof-route">Sagamu → Ibadan</span>
+            <span style="font-size:12px;color:var(--muted);font-family:var(--mono);">LG-058</span>
+            <span class="risk-pill risk-high">HIGH 78</span>
+          </div>
+          <div class="proof-row">
+            <span class="proof-route">Ikeja → Sagamu</span>
+            <span style="font-size:12px;color:var(--muted);font-family:var(--mono);">LG-017</span>
+            <span class="risk-pill risk-med">MED 51</span>
+          </div>
+          <div class="proof-row">
+            <span class="proof-route">Apapa → Ikeja</span>
+            <span style="font-size:12px;color:var(--muted);font-family:var(--mono);">LG-041</span>
+            <span class="risk-pill risk-low">LOW 22</span>
+          </div>
+          <div class="proof-row" style="border-bottom:none;">
+            <span class="proof-route">Ikorodu → Lekki</span>
+            <span style="font-size:12px;color:var(--muted);font-family:var(--mono);">LG-029</span>
+            <span class="risk-pill risk-low">LOW 18</span>
+          </div>
+        </div>
+
+        <!-- AI alert -->
+        <div class="ai-alert">
+          <div class="ai-alert-dot"></div>
+          <div>
+            <div style="font-size:11px;color:var(--blue-light);margin-bottom:3px;letter-spacing:.06em;">AI RECOMMENDATION · 3 HRS EARLY</div>
+            <div>Reroute LG-002 via Sagamu bypass — checkpoint delay detected. Saves 1hr 40min and avoids night curfew window.</div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;margin-top:16px;font-family:var(--mono);font-size:11px;color:var(--muted);">
+          <span>34 trucks active</span>
+          <span>7 alerts firing</span>
+          <span>142 AI queries handled today</span>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="fade-up">
+        <span class="section-tag">How It Works</span>
+        <h2 class="section-title heading" style="font-size:clamp(28px,3.5vw,42px);margin-bottom:32px;">From raw signal<br>to decisive action</h2>
+
+        <div class="proof-steps">
+          <div class="proof-step">
+            <div class="step-line">
+              <div class="step-circle">01</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <h4>Ingest every signal</h4>
+              <p>Our agent swarm pulls live data from vessel tracking, commercial flights, road traffic, fuel markets, weather, and your own fleet telematics — continuously, every minute.</p>
+            </div>
+          </div>
+          <div class="proof-step">
+            <div class="step-line">
+              <div class="step-circle">02</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <h4>Reason over combinations</h4>
+              <p>The AI brain cross-references all signals to detect patterns invisible to any single data source — a silent truck + a checkpoint report + a fuel spike = imminent delay, flagged 3 hours early.</p>
+            </div>
+          </div>
+          <div class="proof-step">
+            <div class="step-line">
+              <div class="step-circle">03</div>
+              <div class="step-connector"></div>
+            </div>
+            <div class="step-body">
+              <h4>Surface intelligence, not noise</h4>
+              <p>Prioritised alerts with context and recommendations — not raw data dumps. Your team sees what matters, ranked by impact, with a suggested action already written.</p>
+            </div>
+          </div>
+          <div class="proof-step">
+            <div class="step-line">
+              <div class="step-circle">04</div>
+            </div>
+            <div class="step-body">
+              <h4>Act autonomously or with one click</h4>
+              <p>Routine actions — customer alerts, reroute notifications, invoice generation — execute automatically. High-stakes decisions surface to your team with full intelligence context, ready for one-click approval.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS — Replace placeholder copy with real testimonials
+     ============================================================ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="text-center fade-up">
+      <span class="section-tag">Proof</span>
+      <h2 class="section-title heading">What operators say<br>after the first 90 days</h2>
+    </div>
+
+    <div class="testimonials-grid">
+
+      <!-- Edit: quote, name, role, company — replace [PLACEHOLDER] once you have real testimonials -->
+      <div class="testimonial-card fade-up">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"We stopped thinking about customer service the week LogiFlow went live. Our ops manager was drowning — now she runs the operation instead of answering WhatsApp messages all day. The ROI calculation was embarrassing. We should have done this a year ago."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">MO</div>
+          <div>
+            <div class="author-name">Marvellous Olaiya</div>
+            <div class="author-role"> [Leading FMCG Distributor] · Lagos</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-up">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"The route risk scoring alone saved us three major incidents in the first month. The AI flagged a checkpoint issue on the Sagamu corridor at 6am — by the time our driver would have hit it, we'd already rerouted. That's what intelligence means."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">PO</div>
+          <div>
+            <div class="author-name">Peter Okonkwo</div>
+            <div class="author-role"> [Logistics Manager] · Port Harcourt</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card fade-up">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"I've been shown a lot of 'AI dashboards.' They all look impressive and do nothing. LogiFlow is different — it actually acts. Our customers started commenting that our communication had improved before I'd even told them we changed anything."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">TF</div>
+          <div>
+            <div class="author-name">Tunde Fashola</div>
+            <div class="author-role"> [Operations Director] · Kano</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Trust signals / stats -->
+    <div class="trust-signals fade-up">
+      <div class="trust-item">
+        <div class="trust-num" data-target="81" data-suffix="%">0%</div>
+        <div class="trust-label">AI query resolution rate</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num" data-target="40" data-suffix="%">0%</div>
+        <div class="trust-label">avg CS cost reduction</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num" data-target="3" data-suffix="hr">0hr</div>
+        <div class="trust-label">average early warning</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-num" data-target="60" data-suffix="%+">0%+</div>
+        <div class="trust-label">manual admin eliminated</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ — 5 objections that stop people buying
+     Edit: .faq-q-text and .faq-answer content
+     ============================================================ -->
+<section id="faq">
+  <div class="container">
+    <div class="text-center fade-up">
+      <span class="section-tag">FAQ</span>
+      <h2 class="section-title heading">The questions that<br>actually matter</h2>
+      <p class="section-sub centered">Five objections. Five direct answers. No evasion.</p>
+    </div>
+
+    <div class="faq-grid fade-up">
+
+      <!-- Left column -->
+      <div class="faq-col">
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Is this just another dashboard? We've seen these before.</span>
+            <span class="faq-chevron">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+            </span>
+          </button>
+          <div class="faq-answer">
+            No — and that distinction matters. A dashboard shows you what happened. LogiFlow AI tells you what's about to happen, and then acts on it. The difference is the same as a rear-view mirror versus a GPS that reroutes you before you hit the traffic. Other tools surface data. This one reasons over it, prioritises it, and executes routine responses without waiting for a human. If you've been burned by dashboards before, this is what you were actually looking for.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span class="faq-q-text">Our data is fragmented — WhatsApp, spreadsheets, phone calls. Can this still work?</span>
+            <span class="faq-chevron">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+            </span>
+          </button>
+          <div class="faq-answer">
+            That's exactly the environment we were built for. Most enterprise logistics operations in growing markets run on exactly this stack — and a tool that requires clean, structured data first is useless to you. Our onboarding team maps your existing data flows in the first two weeks, regardless of how fragmented they are. We also supplement your internal data with external signals — vessel tracking, traffic APIs, fuel markets — so you gain intelligence even before your own data is fully integrated.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span class="faq-q-text">How long before we actually see real results?</span>
+            <span class="faq-chevron">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+            </span>
+          </button>
+          <div class="faq-answer">
+            Measurable within 30 days. In week one, the AI Customer Agent handles 80%+ of tracking queries — your team feels this immediately. By week four, live dashboards and route risk scores are running. By month three, the system has enough pattern data to genuinely predict disruptions before they happen, not just react to them. We structure the onboarding to deliver a visible win in the first 14 days — because if you can't see value by then, something is wrong.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right column -->
+      <div class="faq-col">
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span class="faq-q-text">What makes LogiFlow different from what we already use?</span>
+            <span class="faq-chevron">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+            </span>
+          </button>
+          <div class="faq-answer">
+            Three things that most logistics tools don't have: it acts, not just alerts. It fuses external signals (ports, traffic, fuel, weather) with your internal fleet data — most tools only see your data. And it learns from your specific operation over time, so the longer you run it, the sharper the predictions get. Most logistics SaaS is a generic tool applied to your business. LogiFlow AI becomes your business's intelligence — shaped by your routes, your clients, your operational context.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            <span class="faq-q-text">The investment is significant. How do I justify this internally?</span>
+            <span class="faq-chevron">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 4l4 4 4-4"/></svg>
+            </span>
+          </button>
+          <div class="faq-answer">
+            Start with what you're currently losing. An ops manager spending 4+ hours daily on manual tracking and WhatsApp queries costs $1,500–$3,000/month in productive time alone — before you count route inefficiencies, delayed decisions, missed SLAs, and lost clients from poor communication. For any enterprise running 20+ trucks or managing complex supply chains, the ROI calculation is straightforward. We build this model for your specific operation in the free audit, using your numbers — not our averages. Most clients see full payback inside 60 days.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRICING
+     Edit: prices, tier names, features lists, CTA links
+     ============================================================ -->
+<section id="pricing">
+  <div class="container">
+    <div class="text-center fade-up">
+      <span class="section-tag">Pricing</span>
+      <h2 class="section-title heading">Straightforward pricing.<br>Measurable ROI.</h2>
+      <p class="section-sub centered">All plans include onboarding, data integration, and dedicated support. No hidden fees. Cancel anytime.</p>
+    </div>
+
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card fade-up">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-price">$850<span>/mo</span></div>
+        <div class="pricing-period">billed monthly · cancel anytime</div>
+        <p class="pricing-desc">For logistics SMEs ready to automate customer ops and gain real-time visibility.</p>
+        <ul class="pricing-features">
+          <li>AI Customer Agent — WhatsApp-native, 24/7</li>
+          <li>Live fleet tracking dashboard</li>
+          <li>Route risk scoring (5 key corridors)</li>
+          <li>Proactive delay alert system</li>
+          <li>Up to 5 users</li>
+          <li>2-week onboarding consultation</li>
+          <li>Email & chat support</li>
+        </ul>
+        <a href="#close" class="pricing-cta ghost">Get Started</a>
+      </div>
+
+      <!-- Growth — FEATURED -->
+      <div class="pricing-card featured fade-up">
+        <span class="popular-badge">★ Most Popular</span>
+        <div class="pricing-tier">Growth</div>
+        <div class="pricing-price">$1,850<span>/mo</span></div>
+        <div class="pricing-period">billed monthly · cancel anytime</div>
+        <p class="pricing-desc">For enterprises needing full-stack intelligence across fleet, supply chain, and operations.</p>
+        <ul class="pricing-features">
+          <li>Everything in Starter</li>
+          <li>Operations Intelligence dashboard (full)</li>
+          <li>Workflow Automation suite</li>
+          <li>3D map with live truck positions</li>
+          <li>Natural language query engine</li>
+          <li>Fuel cost forecasting</li>
+          <li>Port congestion intelligence</li>
+          <li>Up to 20 users</li>
+          <li>Dedicated account manager</li>
+        </ul>
+        <a href="#close" class="pricing-cta primary">Get Started</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card fade-up">
+        <div class="pricing-tier">Enterprise</div>
+        <div class="pricing-price" style="font-size:32px;padding-top:8px;">$3,550<span style="font-size:16px;">/mo</span></div>
+        <div class="pricing-period">custom contracts available</div>
+        <p class="pricing-desc">For large FMCG, manufacturers, and multi-division logistics with complex intelligence needs.</p>
+        <ul class="pricing-features">
+          <li>Everything in Growth</li>
+          <li>Custom AI model training on your data</li>
+          <li>ERP / WMS / TMS integration</li>
+          <li>Multi-division command centre</li>
+          <li>Predictive disruption modelling</li>
+          <li>Unlimited users</li>
+          <li>On-site consulting & SLA guarantee</li>
+          <li>White-label option available</li>
+        </ul>
+        <a href="#close" class="pricing-cta ghost">Talk to Us</a>
+      </div>
+
+    </div>
+
+    <p class="pricing-note fade-up">
+      Not ready to commit? <a href="#close">Start with a free 60-minute Operations Audit</a> — we map your operation, identify the leaks, and show you exactly what intelligence fixes. No obligation.
+    </p>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FINAL CLOSE — The section that makes leaving feel worse
+     Edit: close-h2, close-sub, guarantee text, urgency line
+     ============================================================ -->
+<section id="close">
+  <div class="grid-bg" style="opacity:0.5;"></div>
+  <div class="close-glow"></div>
+
+  <div class="close-inner fade-up">
+
+    <div class="close-tag">The window is open — but not indefinitely</div>
+
+    <!-- THE CLOSE HEADLINE — creates urgency without being sleazy -->
+    <h2 class="close-h2 heading">
+      The operations that invest<br>in intelligence today<br>
+      <span style="color:var(--blue3);">will be impossible to compete with by 2030.</span>
+    </h2>
+
+    <p class="close-sub">
+      AI adoption in logistics sits at under 10% globally. The companies that move first don't just get an edge — they build a structural advantage that compounds every month. Your competitors are still running on WhatsApp groups and end-of-week reports. The gap you build now becomes tomorrow's unassailable lead.
+      <br><br>
+      Every week you wait is a week they don't have to catch up.
+    </p>
+
+    <!-- Risk reversal / guarantee -->
+    <div class="close-guarantee">
+      <span class="guarantee-icon">🛡️</span>
+      <div>
+        <strong style="color:var(--white);display:block;margin-bottom:3px;">Zero-risk entry: Free 60-minute Operations Audit</strong>
+        We map your operation, identify exactly where you're losing money, and show you what intelligence fixes — before you spend a cent. If you don't see the value clearly, we part as friends.
+      </div>
+    </div>
+
+    <!-- Primary CTA -->
+    <a href="mailto:hello@logiflowai.ng" class="btn btn-primary btn-large" style="display:inline-flex;">
+      Book My Free Audit
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+
+    <div class="close-urgency">
+      Free audit · No credit card · Live intelligence demo · Results in first session
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER — Edit contact details, links
+     ============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">Logi<span>Flow</span> AI</div>
+        <p class="footer-tagline">Nigeria's first Palantir-class logistics intelligence platform. Built for the world's most complex markets.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#benefits">What You Get</a>
+        <a href="#proof">How It Works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <!-- Edit: replace # with real links -->
+        <a href="#">Privacy Policy</a>
+        <a href="mailto:hello@logiflowai.ng">Contact</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2026 LogiFlow AI. All rights reserved.</span>
+      <span class="footer-built">Built for enterprises that refuse to operate blind.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT — Navbar, mobile menu, FAQ, animations, counters
+     ============================================================ -->
+<script>
+/* ── NAVBAR scroll effect ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── MOBILE MENU ── */
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+function closeMobile() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+/* ── FAQ ACCORDION ── */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+  /* Close all open items first */
+  document.querySelectorAll('.faq-item.open').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.faq-answer').classList.remove('open');
+  });
+  /* Open this one if it was closed */
+  if (!isOpen) {
+    item.classList.add('open');
+    answer.classList.add('open');
+  }
+}
+
+/* ── FADE-UP ON SCROLL ── */
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.fade-up').forEach(el => fadeObserver.observe(el));
+
+/* ── COUNTER ANIMATION — counts up on first view ── */
+function animateCounter(el, target, prefix, suffix, duration) {
+  let start = 0;
+  const step = target / 60;
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = (prefix || '') + Math.round(start) + (suffix || '');
+    if (start >= target) clearInterval(timer);
+  }, duration / 60);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('[data-target]').forEach(el => {
+        animateCounter(
+          el,
+          parseInt(el.dataset.target),
+          el.dataset.prefix || '',
+          el.dataset.suffix || '',
+          1400
+        );
+      });
+      counterObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.stat-bar, .trust-signals').forEach(el => counterObserver.observe(el));
+
+/* ── SMOOTH SCROLL for anchor links ── */
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+  link.addEventListener('click', e => {
+    const target = document.querySelector(link.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
